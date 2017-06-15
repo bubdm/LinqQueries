@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Zadanie3
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                var query = from x in db.Products
+                            select x;
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x.Color);
+                }
+            }
+        }
+    }
+}

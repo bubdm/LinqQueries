@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Zadanie3
+{
+    public class FromMethods
+    {
+       
+        public List<Product> GetProductsByName(string namePart)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> query = (from x in db.Products
+                            where x.Name.Contains(namePart)
+                            select x).ToList();
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x);
+                }
+
+
+                return query;
+
+               
+            }
+        }
+
+
+        public void GetProductsWithNRecentReviews(int howManyReviews)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                IQueryable < IEnumerable<Product> > query = from product in db.Products
+                            join productreviews in db.ProductReviews
+                            on product.ProductID equals productreviews.ProductID
+                            group product by product.ProductID  into grp
+                            where grp.Count() >= 1
+                            select grp; // + ).Count();
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x);
+                }
+            }
+        }
+
+
+        public List<Product> GetNRecentlyReviewedProducts(int howManyProducts)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> query = (from product in db.Products
+                                       join productreviews in db.ProductReviews
+                                       on product.ProductID equals productreviews.ProductID
+                                       orderby productreviews.ReviewDate
+                                       select product).Take(howManyProducts).ToList();
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x.ProductID);
+                }
+
+                return query;
+
+
+            }
+
+        }
+
+
+
+    }
+}
+

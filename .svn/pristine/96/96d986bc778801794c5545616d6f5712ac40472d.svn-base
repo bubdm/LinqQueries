@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Zadanie3
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            FromMethods.GetProductsWithNRecentReviews(1);
+            Console.ReadKey();
+            /*
+            String parameter = "Chainring";
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                var query = from x in db.Products
+                            where x.Name.Contains(parameter)
+                            select x;
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine("Product ID: " +x.ProductID + " Color: " + x.Color + " Price: " + x.ListPrice + "");
+                }
+
+                Console.ReadKey();
+                */
+            }
+        }
+    }
+

@@ -1,0 +1,172 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Zadanie3
+{
+    public class FromMethods
+    {
+
+        public static List<Product> GetProductsByName(string namePart)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> query = (from x in db.Products
+                                       where x.Name.Contains(namePart)
+                                       select x).ToList();
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x);
+                }
+
+
+                return query;
+
+
+            }
+        }
+
+        public static List<Product> GetProductsByVendorName(string vendorName)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> query = (from product in db.Products
+                                       join productvendor in db.ProductVendors
+                                       on product.ProductID equals productvendor.ProductID
+                                       join vendor in db.Vendors
+                                       on productvendor.BusinessEntityID equals vendor.BusinessEntityID
+                                       where vendor.Name.Contains(vendorName)
+                                       orderby product.Name, vendor.Name
+                                       select product).ToList();
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x);
+                }
+
+
+                return query;
+
+
+            }
+        }
+
+
+        public static List<string> GetProductNamesByVendorName(string vendorName)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<String> query = (from product in db.Products
+                                      join productvendor in db.ProductVendors
+                                      on product.ProductID equals productvendor.ProductID
+                                      join vendor in db.Vendors
+                                      on productvendor.BusinessEntityID equals vendor.BusinessEntityID
+                                      where vendor.Name.Contains(vendorName)
+                                      orderby product.Name, vendor.Name
+                                      select product.Name).ToList();
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x);
+                }
+
+
+                return query;
+
+
+            }
+        }
+
+
+        public static List<Product> GetProductsWithNRecentReviews(int howManyReviews)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<int> productIds = (from product in db.ProductReviews
+                                        join productReviews in db.ProductReviews
+                                        on product.ProductID equals productReviews.ProductID
+                                        group product by product.ProductID into groupedProducts
+                                        where groupedProducts.Count() >= howManyReviews
+                                        select groupedProducts.Key).ToList();
+
+                List<Product> productsThatHaveReview = db.Products.Where(p => productIds.Contains(p.ProductID)).ToList();
+
+                foreach (var x in productsThatHaveReview)
+                {
+                    Console.WriteLine(x.Name + " " + x.ProductID);
+                }
+
+                return productsThatHaveReview;
+            }
+        }
+
+
+        public static List<Product> GetNRecentlyReviewedProducts(int howManyProducts)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> query = (from product in db.Products
+                                       join productreviews in db.ProductReviews
+                                       on product.ProductID equals productreviews.ProductID
+                                       orderby productreviews.ReviewDate
+                                       select product).Take(howManyProducts).ToList();
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x.ProductID);
+                }
+
+                return query;
+
+
+            }
+
+        }
+
+        public static List<Product> GetNProductsFromCategory(string categoryName, int n)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> query = (from product in db.Products
+                                       join subcategory in db.ProductSubcategories
+                                       on product.ProductSubcategoryID equals subcategory.ProductSubcategoryID
+                                       join category in db.ProductCategories
+                                       on subcategory.ProductCategoryID equals category.ProductCategoryID
+                                       where category.Name.Equals(categoryName)
+                                       orderby category.Name, product.Name
+                                       select product).Take(n).ToList();
+
+                foreach (var x in query)
+                {
+                    Console.WriteLine(x.Name);
+                }
+
+                return query;
+
+
+            }
+        }
+
+        public static int GetTotalStandardCostByCategory(String category)
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                var query = (from product in db.Products
+                             join subcategory in db.ProductSubcategories
+                             on product.ProductSubcategoryID equals subcategory.ProductSubcategoryID
+                             join _category in db.ProductCategories
+                             on subcategory.ProductCategoryID equals _category.ProductCategoryID
+                             where _category.Name.Equals(category)
+                             select product).ToList();
+
+                int sum = Convert.ToInt32(query.Sum(x => x.ListPrice));
+                return sum;
+
+
+            }
+
+        }
+
+    }
+}

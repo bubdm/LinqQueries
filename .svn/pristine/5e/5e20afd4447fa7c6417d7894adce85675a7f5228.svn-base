@@ -1,0 +1,107 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Zadanie3;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace UnitTestProject1
+{
+    [TestClass]
+    public class UnitTest1
+    {
+
+        #region FromMethods
+        [TestMethod]
+        public void GetProductsByName()
+        {
+            
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List <Product> products = new List<Product>();
+                products = FromMethods.GetProductsByName("ML Mountain Frame-W - Silver, 40");
+                Assert.IsTrue(products.Count == 1);
+
+            }
+        }
+
+
+        [TestMethod]
+        public void GetProductsByVendorName()
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> products = new List<Product>();
+                products = FromMethods.GetProductsByVendorName("Vision Cycles, Inc.");
+                Assert.IsTrue(products.Count == 3);
+            }
+        }
+
+
+        [TestMethod]
+        public void GetProductNamesByVendorName()
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<String> products = new List<String>();
+                products = FromMethods.GetProductNamesByVendorName("Vision Cycles, Inc.");
+                Assert.IsTrue(products.Count > 0);
+            }
+        }
+
+        [TestMethod]
+        public void GetProductsWithNRecentReviews()
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> products = new List<Product>();
+                products = FromMethods.GetProductsWithNRecentReviews(2);
+                Assert.IsTrue(products.Count == 1);
+            }
+        }
+
+        [TestMethod]
+        public void GetNRecentlyReviewedProducts()
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> products = new List<Product>();
+                products = FromMethods.GetNRecentlyReviewedProducts(2);
+                Assert.IsTrue(products.Count == 2);
+            }
+        }
+
+
+        [TestMethod]
+        public void GetNProductsFromCategory()
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                List<Product> products = new List<Product>();
+                products = FromMethods.GetNProductsFromCategory("Accessories", 2);
+                Assert.IsTrue(products.Count == 2);
+            }
+        }
+        [TestMethod]
+        public void GetTotalStandardCostByCategory()
+        {
+            using (DataClasses1DataContext db = new DataClasses1DataContext())
+            {
+                int sum;
+                sum = FromMethods.GetTotalStandardCostByCategory("Accessories");
+                Assert.IsTrue(sum == 996);
+            }
+        }
+
+        
+
+        #endregion
+
+
+        #region ExtensionMethods
+
+
+
+        #endregion
+    }
+}
